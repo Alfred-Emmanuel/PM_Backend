@@ -1,3 +1,4 @@
 import { startApp } from "./app";
+import { initializeDBConnection, shutDown } from "./core";
 
-startApp();
+initializeDBConnection().then(startApp).catch(shutDown);
