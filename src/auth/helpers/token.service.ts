@@ -4,7 +4,7 @@ import * as jwt from "jsonwebtoken";
 import { IJwtData } from "../types";
 
 import { Encryptor } from "../../app";
-import { UnAuthorizedError, config /* logger */ } from "../../core";
+import { UnAuthorizedError, config, logger } from "../../core";
 import { AppMessages } from "../../common";
 
 export class TokenService {
@@ -51,7 +51,7 @@ export class TokenService {
     try {
       return jwt.decode(token) as jwt.JwtPayload;
     } catch (err) {
-      // logger.error(err);
+      logger.error(err);
       throw new UnAuthorizedError(AppMessages.FAILURE.INVALID_TOKEN_PROVIDED);
     }
   }
