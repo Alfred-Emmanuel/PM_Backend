@@ -14,7 +14,7 @@ export const config = Object.freeze({
       isInTesting: process.env.NODE_ENV === ENVIRONMENT.TEST,
     },
     encryption: {
-      key: process.env.ENCRYPTION_KEY as string,
+      key: process.env.ENCRYPTION_KEY || "",
     },
   },
   auth: {

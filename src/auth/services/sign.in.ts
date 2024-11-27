@@ -38,6 +38,16 @@ export class SignIn {
       throw new UnAuthorizedError(AppMessages.FAILURE.INVALID_CREDENTIALS);
     }
 
+    const userResponse = user.toJSON();
+
+    // Exclude multiple fields from the response
+    delete userResponse.password;
+    delete userResponse.createdAt;
+    delete userResponse.updatedAt;
+    delete userResponse.isDeleted;
+    delete userResponse.githubId;
+    delete userResponse.googleId;
+
     const [accessToken, refresh_token] = await this.tokenService.getTokens({
       id: user.id.toString(),
       email: user.email,
@@ -52,7 +62,7 @@ export class SignIn {
       code: HttpStatusCodes.OK,
       message: AppMessages.SUCCESS.LOGIN,
       data: {
-        user: user.toJSON(),
+        user: userResponse,
         tokens: {
           access_token: accessToken,
           refresh_token: refresh_token,

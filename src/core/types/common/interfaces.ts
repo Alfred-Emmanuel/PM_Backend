@@ -48,7 +48,7 @@ export interface ValidationSchema {
   inputSchema?: Schema;
   paramsSchema?: Schema;
   querySchema?: Schema;
-  fileSchema?: Schema;
+  // fileSchema?: Schema;
 }
 
 export interface IEMAIL {

@@ -11,7 +11,6 @@ import { SignUpPayload } from "../types/payload";
 export class SignUp {
   constructor(public readonly userRepo: typeof User) {}
 
-  
   handle = async ({ input }: Context<SignUpPayload>) => {
     const { email, password } = input;
 

@@ -1,12 +1,12 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../../core";
-import { DATE } from "sequelize";
 
 class User extends Model {
   public id!: number;
   public googleId?: string;
   public githubId?: string;
-  public displayName!: string;
+  public firstName!: string;
+  public lastName!: string;
   public email!: string;
   public password!: string;
   public isDeleted!: boolean;
@@ -24,7 +24,11 @@ User.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
-    displayName: {
+    firstName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    lastName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -56,8 +60,10 @@ User.init(
   }
 );
 
-sequelize.sync({ force: false }).then(() => {
-  console.log("Database synchronized");
-});
+// if (process.env.NODE_ENV !== "production" || process.env.NODE_ENV !== "production") {
+//   sequelize.sync({ force: false }).then(() => {
+//     console.log("Database synchronized");
+//   });
+// }
 
 export { User };
