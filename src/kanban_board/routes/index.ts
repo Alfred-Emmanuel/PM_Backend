@@ -43,7 +43,7 @@ kanbanBoardRouter
     async (req: Request, res: Response) => {
       const { kanbanBoardId } = req.params;
       const { email } = req.body;
-      const invitedBy = req.user?.id; // User ID from the authentication middleware
+      const invitedBy = req.user?.id;
 
       try {
         // Assuming sendInvite is a function that interacts with the database
