@@ -24,3 +24,21 @@ export const signInSchema: ValidationSchema = {
     }).required(),
   }),
 };
+
+export const createKanbanBoardSchema: ValidationSchema = {
+  inputSchema: Joi.object({
+    title: Joi.string().required(),
+  }),
+};
+
+export const sendKanbanBoardInvite: ValidationSchema = {
+  // Validate params directly
+  paramsSchema: Joi.object({
+    kanbanBoardId: Joi.string().required(),
+  }),
+
+  // Validate body
+  inputSchema: Joi.object({
+    email: Joi.string().email().required(),
+  }),
+};
