@@ -23,7 +23,7 @@ Permissions.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "Users", // The table name of the User model
+        model: "users", // The table name of the User model
         key: "id",
       },
       onDelete: "CASCADE", // Optional: handle cascading delete

@@ -1,7 +1,7 @@
 import { Invite } from "../models";
 
 export const updateInviteStatus = async (
-  inviteId: number, // ID of the invite to update
+  inviteId: string, // ID of the invite to update
   status: "accepted" | "rejected" // New status
 ) => {
   try {

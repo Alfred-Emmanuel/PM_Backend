@@ -42,3 +42,11 @@ export const sendKanbanBoardInvite: ValidationSchema = {
     email: Joi.string().email().required(),
   }),
 };
+
+export const updateInvite: ValidationSchema = {
+  // Validate params directly
+  paramsSchema: Joi.object({
+    inviteId: Joi.string().required(),
+    action: Joi.string().required(),
+  }),
+};

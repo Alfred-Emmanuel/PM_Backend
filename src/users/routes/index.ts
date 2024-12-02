@@ -5,7 +5,7 @@ import { TokenService } from "../../auth";
 import { Encryptor } from "../../app/providers/encryptor/encryptor";
 import { UnAuthorizedError } from "../../core";
 import { signInSchema, signUpSchema } from "../../auth/routes";
-import { validateRequest } from "../../auth";
+import { validateRequestBody } from "../../auth";
 
 const authRouter = Router();
 const encryptor = new Encryptor();
@@ -17,7 +17,7 @@ const signUp = new SignUp(User);
 authRouter
   .post(
     "/login",
-    validateRequest(signInSchema.inputSchema),
+    validateRequestBody(signInSchema.inputSchema),
     async (req: Request, res: Response) => {
       try {
         const input = req.body;
@@ -36,7 +36,7 @@ authRouter
   )
   .post(
     "/sign_up",
-    validateRequest(signUpSchema.inputSchema),
+    validateRequestBody(signUpSchema.inputSchema),
     async (req: Request, res: Response) => {
       try {
         const input = req.body;
