@@ -31,6 +31,13 @@ export const createKanbanBoardSchema: ValidationSchema = {
   }),
 };
 
+export const createListSchema: ValidationSchema = {
+  inputSchema: Joi.object({
+    title: Joi.string().required(),
+    kanbanBoardId: Joi.number().required(),
+  }),
+};
+
 export const sendKanbanBoardInvite: ValidationSchema = {
   // Validate params directly
   paramsSchema: Joi.object({

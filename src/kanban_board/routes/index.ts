@@ -1,6 +1,7 @@
 // import * as express from "express"
-import express, { Router, Request, Response } from "express";
-import { KanbanBoard } from "../models";
+import express, { Request, Response } from "express";
+import { KanbanBoard } from "../../kanban_board/models";
+import { deleteKanbanBoard } from "../services/delete";
 import {
   addPermission,
   revokePermission,
@@ -12,6 +13,7 @@ import {
   updateInviteStatus,
   getPendingInvitesForKanbanBoard,
 } from "../../invite/services";
+import { getListsForKanbanBoard } from "../../lists/services/getList";
 import {
   createKanbanBoardSchema,
   sendKanbanBoardInvite,
@@ -22,12 +24,53 @@ import { validateRequestBody, validateRequestParams } from "../../auth";
 export const kanbanBoardRouter = express.Router();
 
 kanbanBoardRouter
+  .get("/:id/lists", async (req: Request, res: Response) => {
+    const { id } = req.params; // Extract the kanbanBoardId from the URL params
+
+    try {
+      const kanbanBoardId = parseInt(id, 10); // Convert id to integer
+      if (isNaN(kanbanBoardId)) {
+        res.status(400).json({ message: "Invalid Kanban Board ID" });
+        return;
+      }
+
+      // Call the function to fetch lists for the kanban board
+      const lists = await getListsForKanbanBoard(kanbanBoardId);
+
+      // Return the lists if found
+      if (lists.length === 0) {
+        res
+          .status(404)
+          .json({ message: "No lists found for this Kanban Board" });
+        return;
+      }
+
+      res.status(200).json(lists);
+      return;
+    } catch (error) {
+      console.error("Error fetching lists:", error);
+      res
+        .status(500)
+        .json({ message: "An error occurred while fetching lists" });
+      return;
+    }
+  })
   .get("/get_boards", async (req: Request, res: Response) => {
     try {
-      // Fetch all boards from the database
-      const boards = await KanbanBoard.findAll(); // Use `findAll` for Sequelize or equivalent for your ORM/DB
+      const ownerId = req.user?.id; // Get the current user's ID
 
-      // Respond with the list of boards
+      if (!ownerId) {
+        res.status(401).json({
+          success: false,
+          message: "Unauthorized. User ID is missing.",
+        });
+      }
+
+      // Fetch boards where the ownerId matches the user's ID
+      const boards = await KanbanBoard.findAll({
+        where: { ownerId }, // Sequelize condition
+      });
+
       res.status(200).json({
         success: true,
         data: boards,
@@ -139,15 +182,27 @@ kanbanBoardRouter
       res.status(500).json({ message: "Error granting permission", error });
     }
   })
-  .delete("/permissions/:permissionId", async (req, res) => {
-    const { permissionId } = req.params;
-
+  .delete("/delete_board/:boardId", async (req, res) => {
+    const { boardId } = req.params;
+    const ownerId = req.user?.id;
     try {
-      const result = await revokePermission(Number(permissionId)); // Using Number() to convert the permissionId to a number
-      res.status(200).json({ message: "Permission revoked", result });
+      const result = await deleteKanbanBoard(Number(boardId), Number(ownerId));
+      res.status(200).json(result);
     } catch (error: any) {
-      res
-        .status(500)
-        .json({ message: "Error revoking permission", error: error.message });
+      if (error.message === "Kanban board not found") {
+        res.status(404).json({ message: error.message });
+        return;
+      } else if (
+        error.message === "You are not authorized to delete this Kanban board"
+      ) {
+        res.status(403).json({ message: error.message }); // Forbidden
+        return;
+      } else {
+        res.status(500).json({
+          message: "Error deleting Kanban board",
+          error: error.message,
+        });
+        return;
+      }
     }
   });

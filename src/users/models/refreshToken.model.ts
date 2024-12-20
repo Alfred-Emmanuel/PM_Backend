@@ -12,6 +12,12 @@ class RefreshToken extends Model {
 
 RefreshToken.init(
   {
+    id: {
+      type: DataTypes.INTEGER, // Use INTEGER for auto-increment
+      autoIncrement: true,
+      allowNull: false,
+      primaryKey: true,
+    },
     token: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -41,4 +47,4 @@ sequelize.sync({ force: false }).then(() => {
   console.log("Database synced");
 });
 
-export { RefreshToken }
+export { RefreshToken };
